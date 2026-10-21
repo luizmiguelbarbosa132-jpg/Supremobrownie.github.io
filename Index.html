@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supremo Brownie - Hortolândia-SP</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        choco: {
+                            950: '#140a07',
+                            900: '#1c100b',
+                            800: '#2b1911',
+                            700: '#3e251a',
+                            600: '#543425',
+                            500: '#734935',
+                            100: '#f5ebe6'
+                        },
+                        gold: {
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        title: ['Cinzel', 'serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #140a07;
+            color: #f5ebe6;
+        }
+        .bg-choco-pattern {
+            background-image: radial-gradient(rgba(245, 158, 11, 0.06) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1c100b;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-choco-950 min-h-screen bg-choco-pattern flex flex-col justify-between selection:bg-gold-500 selection:text-choco-950">
+
+    <div id="app" class="min-h-screen flex flex-col">
+
+        <div id="loading-screen" class="fixed inset-0 bg-choco-950 z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+            <div class="relative flex items-center justify-center">
+                <div class="w-20 h-20 border-4 border-gold-500/20 border-t-gold-500 rounded-full animate-spin"></div>
+                <i class="fa-solid fa-cookie-bite text-gold-500 text-2xl absolute"></i>
+            </div>
+            <h2 class="font-title text-2xl text-gold-400 mt-6 tracking-widest uppercase">Supremo Brownie</h2>
+            <p class="text-xs text-choco-100/60 mt-1">Carregando experiência gourmet em Hortolândia...</p>
+        </div>
+
+        <div id="auth-view" class="hidden min-h-screen flex flex-col justify-center items-center p-4">
+            
+            <div class="w-full max-w-md bg-choco-900/95 border border-gold-500/30 rounded-3xl shadow-2xl backdrop-blur-md p-8 md:p-10 relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-gold-600 via-gold-400 to-gold-600"></div>
+
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gold-500/10 border border-gold-500/30 mb-3 shadow-inner transform -rotate-3">
+                        <i class="fa-solid fa-crown text-2xl text-gold-400"></i>
+                    </div>
+                    <h1 class="font-title text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600 tracking-wider uppercase">
+                        Supremo Brownie
+                    </h1>
+                    <div class="flex items-center justify-center gap-1.5 mt-1 text-gold-500/90 text-xs tracking-wider font-semibold">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Rua Cuba, 608 • Hortolândia-SP</span>
+                    </div>
+                </div>
+
+                <div id="auth-alert" class="hidden mb-4 p-3 rounded-xl text-xs font-medium flex items-center gap-2"></div>
+
+                <!-- LOGIN FORM -->
+                <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label for="login-email" class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider mb-1.5">
+                            Email
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-choco-500"></i>
+                            <input type="email" id="login-email" required placeholder="seu@email.com"
+                                class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-3 pl-11 pr-4 text-sm text-choco-100 placeholder-choco-600 focus:outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="login-password" class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider">
+                                Senha
+                            </label>
+                            <button type="button" onclick="switchAuthTab('forgot')" class="text-[11px] text-gold-400 hover:underline">
+                                Esqueceu a senha?
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-choco-500"></i>
+                            <input type="password" id="login-password" required placeholder="••••••••"
+                                class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-3 pl-11 pr-4 text-sm text-choco-100 placeholder-choco-600 focus:outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-choco-950 font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all active:scale-[0.99]">
+                        Entrar na Conta
+                    </button>
+                </form>
+
+                <!-- SIGN UP FORM -->
+                <form id="form-signup" onsubmit="handleSignUp(event)" class="space-y-3.5 hidden">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider mb-1">Nome Completo</label>
+                        <input type="text" id="signup-name" required placeholder="Seu nome"
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 placeholder-choco-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider mb-1">Email</label>
+                        <input type="email" id="signup-email" required placeholder="seu@email.com"
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 placeholder-choco-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
+                        <input type="text" id="signup-whatsapp" required placeholder="19991219781"
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 placeholder-choco-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider mb-1">Senha (Mín. 6 caracteres)</label>
+                        <input type="password" id="signup-password" required placeholder="••••••••"
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 placeholder-choco-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gold-300/90 uppercase tracking-wider mb-1">Confirmar Senha</label>
+                        <input type="password" id="signup-confirm-password" required placeholder="••••••••"
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 placeholder-choco-600 focus:outline-none">
+                    </div>
+                    <button type="submit" id="btn-signup" class="w-full bg-gold-500 hover:bg-gold-400 text-choco-950 font-bold py-3 px-4 rounded-xl shadow-lg transition-all">
+                        Criar Conta
+                    </button>
+                </form>
+
+                <!-- FORGOT FORM -->
+                <form id="form-forgot" onsubmit="handleForgotPassword(event)" class="space-y-4 hidden">
+                    <p class="text-xs text-choco-100/70 text-center">Informe seu e-mail para receber as instruções de recuperação de acesso.</p>
+                    <input type="email" id="forgot-email" required placeholder="seu@email.com"
+                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-3 px-4 text-sm text-choco-100 placeholder-choco-600 focus:outline-none">
+                    <button type="submit" class="w-full bg-gold-500 text-choco-950 font-bold py-3 rounded-xl">Enviar Instruções</button>
+                    <button type="button" onclick="switchAuthTab('login')" class="w-full text-center text-xs text-gold-400 mt-2 block">Voltar ao Login</button>
+                </form>
+
+                <div class="mt-6 pt-5 border-t border-choco-800 text-center text-xs text-choco-100/70">
+                    <div id="login-toggle-text">
+                        Não tem conta? <button type="button" onclick="switchAuthTab('signup')" class="text-gold-400 font-bold hover:underline ml-1">Cadastre-se</button>
+                    </div>
+                    <div id="signup-toggle-text" class="hidden">
+                        Já tem conta? <button type="button" onclick="switchAuthTab('login')" class="text-gold-400 font-bold hover:underline ml-1">Fazer Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="store-view" class="hidden flex-col min-h-screen">
+            
+            <!-- HEADER -->
+            <header class="sticky top-0 z-40 bg-choco-950/95 backdrop-blur-md border-b border-gold-500/20 shadow-xl">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-gold-600 to-gold-400 flex items-center justify-center text-choco-950 shadow-lg font-bold">
+                            <i class="fa-solid fa-crown text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-title text-xl md:text-2xl font-bold text-gold-400 tracking-wider uppercase leading-none">
+                                Supremo Brownie
+                            </h1>
+                            <span class="text-[10px] text-choco-100/60 tracking-widest uppercase font-semibold flex items-center gap-1 mt-0.5">
+                                <i class="fa-solid fa-store text-gold-500"></i> Hortolândia-SP • R. Cuba, 608
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- DESKTOP NAV -->
+                    <nav class="hidden md:flex items-center space-x-2">
+                        <button onclick="switchStoreTab('cardapio')" id="nav-cardapio" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 text-gold-400 bg-choco-900 border border-gold-500/30">
+                            <i class="fa-solid fa-utensils"></i>
+                            <span>Cardápio</span>
+                        </button>
+
+                        <button onclick="switchStoreTab('pedidos-cliente')" id="nav-pedidos-cliente" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-choco-100/70 hover:text-gold-400 hover:bg-choco-900 transition-all flex items-center gap-2 relative">
+                            <i class="fa-solid fa-motorcycle"></i>
+                            <span>Meus Pedidos</span>
+                            <span id="active-order-badge" class="hidden absolute -top-1 -right-1 bg-gold-500 text-choco-950 font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">!</span>
+                        </button>
+
+                        <button onclick="switchStoreTab('loja')" id="nav-loja" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-choco-100/70 hover:text-gold-400 hover:bg-choco-900 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-shop"></i>
+                            <span>A Loja</span>
+                        </button>
+
+                        <button onclick="switchStoreTab('endereco')" id="nav-endereco" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-choco-100/70 hover:text-gold-400 hover:bg-choco-900 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Endereço</span>
+                        </button>
+
+                        <button onclick="switchStoreTab('conta')" id="nav-conta" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-choco-100/70 hover:text-gold-400 hover:bg-choco-900 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-user-gear"></i>
+                            <span>Conta</span>
+                        </button>
+
+                        <!-- OWNER ONLY TABS IN NAV -->
+                        <div id="owner-nav-buttons" class="hidden items-center space-x-2">
+                            <button onclick="switchStoreTab('pedidos')" id="nav-pedidos" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all flex items-center gap-2 relative">
+                                <i class="fa-solid fa-bell"></i>
+                                <span>Validação PIX</span>
+                                <span id="pending-badge-nav" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                            </button>
+                            <button onclick="switchStoreTab('gestao-producao')" id="nav-gestao-producao" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all flex items-center gap-2 relative">
+                                <i class="fa-solid fa-fire-burner"></i>
+                                <span>Cozinha & 99</span>
+                                <span id="active-kitchen-badge" class="hidden absolute -top-1.5 -right-1.5 bg-amber-400 text-choco-950 font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                            </button>
+                            <button onclick="switchStoreTab('pagamentos')" id="nav-pagamentos" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-wallet"></i>
+                                <span>PIX</span>
+                            </button>
+                            <button onclick="switchStoreTab('admin')" id="nav-admin" class="nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                                <span>Dono</span>
+                            </button>
+                        </div>
+
+                        <button onclick="openCartModal()" class="relative px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-choco-100/80 hover:text-gold-400 hover:bg-choco-900 transition-all flex items-center gap-2 bg-choco-900/60 border border-choco-800">
+                            <i class="fa-solid fa-bag-shopping text-gold-400 text-sm"></i>
+                            <span>Carrinho</span>
+                            <span id="cart-badge" class="ml-1 bg-gold-500 text-choco-950 font-extrabold text-[11px] px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                                0
+                            </span>
+                        </button>
+
+                        <button onclick="handleLogout()" class="px-3 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 transition-all ml-1" title="Sair">
+                            <i class="fa-solid fa-right-from-bracket text-base"></i>
+                        </button>
+                    </nav>
+
+                    <!-- MOBILE BUTTONS -->
+                    <div class="flex items-center gap-2 md:hidden">
+                        <button onclick="openCartModal()" class="relative p-2.5 text-gold-400 bg-choco-900 rounded-xl border border-choco-800">
+                            <i class="fa-solid fa-bag-shopping text-lg"></i>
+                            <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-gold-500 text-choco-950 font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
+                                0
+                            </span>
+                        </button>
+                        <button onclick="toggleMobileMenu()" class="p-2.5 text-choco-100 bg-choco-900 rounded-xl border border-choco-800 relative">
+                            <i class="fa-solid fa-bars text-xl"></i>
+                            <span id="pending-badge-mobile-dot" class="hidden absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MOBILE MENU DRAWER -->
+                <div id="mobile-menu" class="hidden md:hidden bg-choco-900 border-b border-choco-800 px-4 py-4 space-y-2">
+                    <button onclick="switchStoreTab('cardapio'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-gold-400 bg-choco-950 font-semibold flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-utensils"></i> Cardápio Completo
+                    </button>
+                    <button onclick="switchStoreTab('pedidos-cliente'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-choco-100/90 font-semibold flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-motorcycle"></i> Meus Pedidos & Acompanhamento
+                    </button>
+                    <button onclick="switchStoreTab('loja'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-choco-100/90 font-semibold flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-shop"></i> A Loja Física
+                    </button>
+                    <button onclick="switchStoreTab('endereco'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-choco-100/90 font-semibold flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-location-dot"></i> Endereço de Entrega
+                    </button>
+                    <button onclick="switchStoreTab('conta'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-choco-100/90 font-semibold flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-user-gear"></i> Minha Conta
+                    </button>
+                    <!-- OWNER ONLY MOBILE MENU ITEMS -->
+                    <div id="owner-mobile-menu" class="hidden space-y-2 pt-2 border-t border-choco-800">
+                        <button onclick="switchStoreTab('pedidos'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-amber-300 bg-amber-500/20 font-semibold flex items-center justify-between text-sm">
+                            <span class="flex items-center gap-3"><i class="fa-solid fa-bell"></i> Validar Pedidos PIX</span>
+                            <span id="pending-badge-mobile-count" class="bg-red-500 text-white font-bold text-xs px-2 py-0.5 rounded-full hidden">0</span>
+                        </button>
+                        <button onclick="switchStoreTab('gestao-producao'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-amber-300 bg-amber-500/20 font-semibold flex items-center justify-between text-sm">
+                            <span class="flex items-center gap-3"><i class="fa-solid fa-fire-burner"></i> Gerenciar Cozinha & Status 99</span>
+                        </button>
+                        <button onclick="switchStoreTab('pagamentos'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-amber-300 bg-amber-500/10 font-semibold flex items-center gap-3 text-sm">
+                            <i class="fa-solid fa-wallet"></i> Configurar PIX (Dono)
+                        </button>
+                        <button onclick="switchStoreTab('admin'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl text-amber-300 bg-amber-500/10 font-semibold flex items-center gap-3 text-sm">
+                            <i class="fa-solid fa-screwdriver-wrench"></i> Painel do Dono & Cardápio
+                        </button>
+                    </div>
+                    <button onclick="handleLogout()" class="w-full text-left px-4 py-3 rounded-xl text-red-400 font-semibold flex items-center gap-3 text-sm pt-2 border-t border-choco-800">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sair da Conta
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
+                <!-- SECTION: CARDÁPIO -->
+                <section id="section-cardapio" class="space-y-8">
+                    <!-- Hero Banner -->
+                    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-choco-900 via-choco-800 to-choco-900 border border-gold-500/30 p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div class="space-y-4 max-w-xl text-center md:text-left">
+                            <span class="inline-flex items-center gap-1.5 bg-gold-500/20 border border-gold-500/40 text-gold-400 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-widest">
+                                <i class="fa-solid fa-fire text-amber-400"></i> O Melhor Brownie e Cookie da Região
+                            </span>
+                            <h2 class="font-title text-3xl md:text-5xl font-extrabold text-choco-100 leading-tight">
+                                Casquinha Crocante, Interior <span class="text-gold-400">Extremamente Cremoso</span>
+                            </h2>
+                            <p class="text-sm text-choco-100/70 leading-relaxed">
+                                Produção artesanal diária na Rua Cuba, 608 - Jardim Santa Clara do Lago, Hortolândia-SP. Peça online ou venha nos visitar!
+                            </p>
+                            <div class="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
+                                <a href="https://wa.me/5519991219781" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3 rounded-xl text-xs transition-all flex items-center gap-2 shadow-lg">
+                                    <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp (19) 99121-9781
+                                </a>
+                                <button onclick="switchStoreTab('loja')" class="bg-choco-800 hover:bg-choco-700 text-gold-400 border border-gold-500/30 font-bold px-5 py-3 rounded-xl text-xs transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-map-location-dot"></i> Ver Horários e Localização
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative flex-shrink-0">
+                            <div class="w-56 h-56 md:w-72 md:h-72 rounded-3xl bg-gold-500/10 border-2 border-gold-500/40 rotate-2 flex items-center justify-center p-2.5 shadow-2xl overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=700&q=80" alt="Brownie Supremo" class="w-full h-full object-cover rounded-2xl -rotate-2 hover:scale-105 transition-transform duration-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="flex items-center gap-2.5 overflow-x-auto pb-2 custom-scrollbar">
+                        <button onclick="filterProducts('all')" class="filter-btn active-filter px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all bg-gold-500 text-choco-950 shadow-md">
+                            Todos os Produtos
+                        </button>
+                        <button onclick="filterProducts('tradicional')" class="filter-btn px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all bg-choco-900 text-choco-100/70 hover:text-gold-400 border border-choco-800">
+                            Tradicionais
+                        </button>
+                        <button onclick="filterProducts('recheado')" class="filter-btn px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all bg-choco-900 text-choco-100/70 hover:text-gold-400 border border-choco-800">
+                            Recheados Supremo
+                        </button>
+                        <button onclick="filterProducts('kits')" class="filter-btn px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all bg-choco-900 text-choco-100/70 hover:text-gold-400 border border-choco-800">
+                            Caixas & Presentes
+                        </button>
+                    </div>
+
+                    <!-- Product Grid -->
+                    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </section>
+
+                <!-- SECTION: MEUS PEDIDOS & ACOMPANHAMENTO (ESTILO 99) -->
+                <section id="section-pedidos-cliente" class="hidden space-y-8 max-w-4xl mx-auto">
+                    <div class="bg-choco-900 border border-gold-500/30 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex items-center justify-between pb-4 border-b border-choco-800">
+                            <div>
+                                <span class="text-xs bg-gold-500/20 text-gold-400 font-bold px-3 py-1 rounded-full uppercase tracking-wider">Acompanhamento em Tempo Real</span>
+                                <h3 class="font-title text-xl font-bold text-choco-100 mt-1">Meus Pedidos Supremo</h3>
+                            </div>
+                            <button onclick="renderClientOrders()" class="bg-choco-950 text-gold-400 border border-gold-500/30 text-xs px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-rotate"></i> Atualizar Status
+                            </button>
+                        </div>
+
+                        <div id="client-orders-list" class="space-y-6">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION: A LOJA FÍSICA -->
+                <section id="section-loja" class="hidden space-y-8 max-w-4xl mx-auto">
+                    <div class="bg-choco-900 border border-gold-500/30 rounded-3xl p-6 md:p-10 shadow-2xl space-y-8">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <span class="text-gold-400 text-xs font-bold uppercase tracking-widest">Venha nos visitar</span>
+                                <h3 class="font-title text-2xl md:text-3xl font-bold text-choco-100">Supremo Brownie em Hortolândia</h3>
+                                <p class="text-xs text-choco-100/70">Ambiente aconchegante, café quentinho e brownies saindo do forno toda hora.</p>
+                            </div>
+                            <div id="owner-edit-photos-banner" class="hidden">
+                                <button onclick="openEditPhotosModal()" class="bg-amber-500 hover:bg-amber-400 text-choco-950 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-md">
+                                    <i class="fa-solid fa-camera"></i> Editar Fotos da Loja (Dono)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-2xl overflow-hidden border border-choco-700 h-64 shadow-lg relative">
+                                <img id="store-photo-1" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80" alt="Loja Supremo Brownie" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                                <span class="absolute bottom-2 left-2 bg-choco-950/80 text-gold-400 text-[10px] px-2 py-1 rounded-lg">Fachada & Balcão</span>
+                            </div>
+                            <div class="rounded-2xl overflow-hidden border border-choco-700 h-64 shadow-lg relative">
+                                <img id="store-photo-2" src="https://images.unsplash.com/photo-1515037893149-de7f840978e2?auto=format&fit=crop&w=600&q=80" alt="Brownies Artesanais" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                                <span class="absolute bottom-2 left-2 bg-choco-950/80 text-gold-400 text-[10px] px-2 py-1 rounded-lg">Produção Diária</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-choco-950 p-5 rounded-2xl border border-choco-800 text-center space-y-2">
+                                <div class="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center mx-auto border border-gold-500/20">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <h4 class="text-xs font-bold text-choco-100 uppercase">Endereço</h4>
+                                <p class="text-[11px] text-choco-100/70">Rua Cuba, 608<br>Jardim Santa Clara do Lago<br>Hortolândia - SP</p>
+                            </div>
+
+                            <div class="bg-choco-950 p-5 rounded-2xl border border-choco-800 text-center space-y-2">
+                                <div class="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center mx-auto border border-gold-500/20">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <h4 class="text-xs font-bold text-choco-100 uppercase">Horário de Funcionamento</h4>
+                                <p class="text-[11px] text-choco-100/70">Seg a Qui: 10h às 20h<br>Sexta: 10h às 17h<br>Domingo: 12h às 19h</p>
+                            </div>
+
+                            <div class="bg-choco-950 p-5 rounded-2xl border border-choco-800 text-center space-y-2">
+                                <div class="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center mx-auto border border-gold-500/20">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <h4 class="text-xs font-bold text-choco-100 uppercase">Contato & Delivery</h4>
+                                <p class="text-[11px] text-choco-100/70">(19) 99121-9781<br>Instagram: @browniesupremoo</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION: ENDEREÇO DE ENTREGA -->
+                <section id="section-endereco" class="hidden space-y-8 max-w-3xl mx-auto">
+                    <div class="bg-choco-900 border border-gold-500/30 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex items-center gap-3 pb-4 border-b border-choco-800">
+                            <div class="w-12 h-12 rounded-2xl bg-gold-500/10 text-gold-400 flex items-center justify-center text-xl border border-gold-500/20">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-title text-xl font-bold text-choco-100">Endereço de Entrega & WhatsApp</h3>
+                                <p class="text-xs text-choco-100/60">Cadastre seus dados para agilizar os pedidos e facilitar o contato do entregador.</p>
+                            </div>
+                        </div>
+
+                        <form onsubmit="handleSaveAddress(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">WhatsApp para Contato / Entrega (com DDD)</label>
+                                <div class="relative">
+                                    <i class="fa-brands fa-whatsapp absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400"></i>
+                                    <input type="text" id="addr-whatsapp" required placeholder="19991219781"
+                                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 pl-10 pr-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Rua / Avenida</label>
+                                    <input type="text" id="addr-street" required placeholder="Ex: Rua Hortência"
+                                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Número</label>
+                                    <input type="text" id="addr-number" required placeholder="123"
+                                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Bairro</label>
+                                    <input type="text" id="addr-neighborhood" required placeholder="Jardim Santa Clara do Lago"
+                                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Cidade / UF</label>
+                                    <input type="text" id="addr-city" value="Hortolândia - SP" readonly
+                                        class="w-full bg-choco-950/50 border border-choco-700/50 text-choco-100/60 rounded-xl py-2.5 px-3.5 text-sm focus:outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Complemento / Ponto de Referência (Opcional)</label>
+                                <input type="text" id="addr-complement" placeholder="Apto 42, Bloco B, Próximo ao mercado..."
+                                    class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                            </div>
+                            <button type="submit" class="bg-gold-500 hover:bg-gold-400 text-choco-950 font-bold py-3 px-6 rounded-xl text-xs transition-all shadow-md flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i> Salvar Endereço e WhatsApp
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- SECTION: MINHA CONTA -->
+                <section id="section-conta" class="hidden space-y-8 max-w-3xl mx-auto">
+                    <div class="bg-choco-900 border border-gold-500/30 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex items-center gap-4 pb-6 border-b border-choco-800">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-gold-600 to-gold-400 flex items-center justify-center text-choco-950 font-bold text-2xl font-title shadow-lg">
+                                <span id="account-avatar">U</span>
+                            </div>
+                            <div>
+                                <h3 id="account-name" class="text-xl font-bold text-choco-100">Nome do Usuário</h3>
+                                <p id="account-email" class="text-xs text-choco-100/60">email@exemplo.com</p>
+                                <span id="account-badge-role" class="inline-flex items-center gap-1 text-[10px] text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded-full mt-1.5 border border-gold-500/20">
+                                    <i class="fa-solid fa-shield-halved"></i> Cliente Verificado
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="font-title text-base text-gold-400 font-bold">Alterar Senha de Acesso</h4>
+                            <form onsubmit="handleUpdatePassword(event)" class="space-y-3">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Senha Atual</label>
+                                    <input type="password" id="change-pass-current" required placeholder="••••••••"
+                                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Nova Senha</label>
+                                    <input type="password" id="change-pass-new" required placeholder="Nova senha forte"
+                                        class="w-full bg-choco-950 border border-choco-700 focus:border-gold-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                                <button type="submit" class="bg-gold-500 hover:bg-gold-400 text-choco-950 font-bold py-2.5 px-6 rounded-xl text-xs transition-all shadow-md">
+                                    Atualizar Senha
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION: VALIDAR PEDIDOS PENDENTES (DONO) -->
+                <section id="section-pedidos" class="hidden space-y-8 max-w-4xl mx-auto">
+                    <div class="bg-choco-900 border border-amber-500/40 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-choco-800 gap-4">
+                            <div>
+                                <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Painel de Validação Manual</span>
+                                <h3 class="font-title text-xl font-bold text-amber-400 mt-1">Pedidos Pendentes de Confirmação PIX</h3>
+                                <p class="text-xs text-choco-100/70 mt-1">Confira seu aplicativo do banco para verificar se o PIX caiu, veja o WhatsApp do cliente e confirme o pedido para iniciar a produção!</p>
+                            </div>
+                            <button onclick="renderPendingOrders()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs px-3 py-2 rounded-xl border border-amber-500/40 transition-all flex items-center gap-1.5 flex-shrink-0">
+                                <i class="fa-solid fa-rotate"></i> Atualizar Lista
+                            </button>
+                        </div>
+
+                        <!-- Pending Orders Container -->
+                        <div id="pending-orders-list" class="space-y-4">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION: GESTÃO DE COZINHA & STATUS ESTILO 99 (DONO) -->
+                <section id="section-gestao-producao" class="hidden space-y-8 max-w-4xl mx-auto">
+                    <div class="bg-choco-900 border border-amber-500/40 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-choco-800 gap-4">
+                            <div>
+                                <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Painel Estilo 99 / Delivery</span>
+                                <h3 class="font-title text-xl font-bold text-amber-400 mt-1">Gerenciamento de Cozinha & Envios</h3>
+                                <p class="text-xs text-choco-100/70 mt-1">Atualize o status dos pedidos confirmados para que o cliente acompanhe em tempo real se está sendo preparado ou enviado.</p>
+                            </div>
+                            <button onclick="renderKitchenOrders()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs px-3 py-2 rounded-xl border border-amber-500/40 transition-all flex items-center gap-1.5 flex-shrink-0">
+                                <i class="fa-solid fa-rotate"></i> Atualizar
+                            </button>
+                        </div>
+
+                        <div id="kitchen-orders-list" class="space-y-4">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION: CONFIGURAR PAGAMENTOS (DONO APENAS) -->
+                <section id="section-pagamentos" class="hidden space-y-8 max-w-3xl mx-auto">
+                    <div class="bg-choco-900 border border-amber-500/40 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex items-center justify-between pb-4 border-b border-choco-800">
+                            <div>
+                                <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Chave PIX da Loja</span>
+                                <h3 class="font-title text-xl font-bold text-amber-400 mt-1">Configurações de Pagamento PIX</h3>
+                            </div>
+                            <i class="fa-solid fa-wallet text-2xl text-amber-400"></i>
+                        </div>
+
+                        <form onsubmit="handleSavePaymentConfig(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Chave PIX da Loja (CNPJ, E-mail ou Celular)</label>
+                                <input type="text" id="config-pix-key" required placeholder="Ex: 00.000.000/0001-00 ou supremobrownie@gmail.com"
+                                    class="w-full bg-choco-950 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Nome do Beneficiário do PIX</label>
+                                <input type="text" id="config-pix-name" required placeholder="Ex: Supremo Brownie LTDA"
+                                    class="w-full bg-choco-950 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                            </div>
+                            <button type="submit" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-choco-950 font-bold py-3 px-6 rounded-xl text-xs transition-all shadow-md">
+                                Salvar Chave PIX
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- SECTION: PAINEL DO DONO & BANCO DE DADOS -->
+                <section id="section-admin" class="hidden space-y-8 max-w-4xl mx-auto">
+                    <div class="bg-choco-900 border border-amber-500/40 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                        <div class="flex items-center justify-between pb-4 border-b border-choco-800">
+                            <div>
+                                <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Modo Proprietário</span>
+                                <h3 class="font-title text-xl font-bold text-amber-400 mt-1">Gerenciamento de Cardápio & Clientes</h3>
+                            </div>
+                            <i class="fa-solid fa-screwdriver-wrench text-2xl text-amber-400"></i>
+                        </div>
+
+                        <!-- Add / Edit Product Form -->
+                        <form id="form-product-admin" onsubmit="handleSaveProduct(event)" class="space-y-4 bg-choco-950 p-5 rounded-2xl border border-choco-800">
+                            <input type="hidden" id="admin-p-id">
+                            <h4 id="admin-product-form-title" class="font-title text-sm text-gold-400 font-bold uppercase tracking-wider">Adicionar Novo Produto no Cardápio</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Nome do Produto</label>
+                                    <input type="text" id="admin-p-name" required placeholder="Ex: Brownie Especial Pistache"
+                                        class="w-full bg-choco-900 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Categoria</label>
+                                    <select id="admin-p-category" required class="w-full bg-choco-900 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                        <option value="tradicional">Tradicional</option>
+                                        <option value="recheado">Recheado Supremo</option>
+                                        <option value="kits">Caixas & Presentes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Preço (R$)</label>
+                                    <input type="number" step="0.01" id="admin-p-price" required placeholder="19.90"
+                                        class="w-full bg-choco-900 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">URL da Imagem</label>
+                                    <input type="url" id="admin-p-img" required placeholder="https://images.unsplash.com/..."
+                                        class="w-full bg-choco-900 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">Descrição</label>
+                                <textarea id="admin-p-desc" rows="2" required placeholder="Ingredientes e detalhes da receita..."
+                                    class="w-full bg-choco-900 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none"></textarea>
+                            </div>
+                            <div class="flex gap-3">
+                                <button type="submit" id="btn-save-product" class="bg-amber-500 hover:bg-amber-400 text-choco-950 font-bold py-2.5 px-6 rounded-xl text-xs transition-all shadow-md">
+                                    Salvar Produto no Cardápio
+                                </button>
+                                <button type="button" id="btn-cancel-edit" onclick="resetProductForm()" class="hidden bg-choco-800 text-choco-100 px-4 py-2.5 rounded-xl text-xs font-semibold">
+                                    Cancelar Edição
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Manage Existing Menu Items List -->
+                        <div class="space-y-4 pt-4 border-t border-choco-800">
+                            <h4 class="font-title text-sm text-gold-400 font-bold uppercase tracking-wider">Gerenciar Itens do Cardápio (Editar / Excluir)</h4>
+                            <div id="admin-products-list" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar pr-2">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Registered Users Database Inspector -->
+                        <div class="pt-6 border-t border-choco-800 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-title text-sm text-gold-400 font-bold uppercase tracking-wider">Banco de Dados - Contas Cadastradas</h4>
+                                <span class="text-[10px] text-choco-100/60 bg-choco-950 px-2.5 py-1 rounded-lg">Local Storage</span>
+                            </div>
+                            <div id="db-users-list" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- FOOTER -->
+            <footer class="bg-choco-950 border-t border-choco-900 py-8 text-center text-xs text-choco-100/50">
+                <div class="max-w-7xl mx-auto px-4 space-y-1">
+                    <p class="font-title text-gold-500 font-semibold text-sm">SUPREMO BROWNIE • HORTOLÂNDIA-SP</p>
+                    <p>Rua Cuba, 608 - Jardim Santa Clara do Lago</p>
+                    <p class="pt-2">&copy; 2026 Supremo Brownie. Todos os direitos reservados.</p>
+                </div>
+            </footer>
+        </div>
+
+        <!-- CART MODAL -->
+        <div id="cart-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex justify-end">
+            <div class="w-full max-w-md bg-choco-900 h-full flex flex-col border-l border-gold-500/25 shadow-2xl">
+                <div class="p-6 border-b border-choco-800 flex items-center justify-between bg-choco-950">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-bag-shopping text-gold-400 text-xl"></i>
+                        <h3 class="font-title text-base text-choco-100 font-bold">Seu Carrinho Supremo</h3>
+                    </div>
+                    <button onclick="closeCartModal()" class="text-choco-100/50 hover:text-choco-100 text-xl p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div id="cart-items" class="flex-grow p-6 overflow-y-auto space-y-3 custom-scrollbar">
+                    <!-- Items rendered dynamically -->
+                </div>
+
+                <div class="p-6 border-t border-choco-800 bg-choco-950 space-y-4">
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between text-choco-100/70">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-choco-100/70">
+                            <span>Entrega em Hortolândia</span>
+                            <span class="text-emerald-400 font-semibold">Grátis / Consultar</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-gold-400 pt-2 border-t border-choco-900">
+                            <span>Total</span>
+                            <span id="cart-total">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckoutModal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>Prosseguir para Pagamento PIX</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKOUT & PAYMENT MODAL -->
+        <div id="checkout-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
+            <div class="w-full max-w-lg bg-choco-900 border border-gold-500/30 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                <div class="flex items-center justify-between pb-4 border-b border-choco-800">
+                    <h3 class="font-title text-lg font-bold text-gold-400">Pagamento via PIX Supremo</h3>
+                    <button onclick="closeCheckoutModal()" class="text-choco-100/60 hover:text-choco-100"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+
+                <!-- Saved Address Preview -->
+                <div class="bg-choco-950 p-4 rounded-2xl border border-choco-800 space-y-1 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gold-300 uppercase"><i class="fa-solid fa-location-dot mr-1"></i> Endereço e WhatsApp</span>
+                        <button onclick="switchStoreTab('endereco'); closeCheckoutModal();" class="text-gold-400 hover:underline">Alterar</button>
+                    </div>
+                    <p id="checkout-addr-display" class="text-choco-100/80">Nenhum endereço cadastrado. Vá em Endereço no menu.</p>
+                </div>
+
+                <!-- PIX Payment Details Box -->
+                <div id="payment-details-box" class="bg-choco-950 p-5 rounded-2xl border border-choco-800 space-y-4 text-center">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT STORE PHOTOS MODAL (OWNER ONLY) -->
+        <div id="edit-photos-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
+            <div class="w-full max-w-md bg-choco-900 border border-amber-500/40 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-choco-800">
+                    <h3 class="font-title text-base font-bold text-amber-400">Editar Fotos da Loja Física</h3>
+                    <button onclick="closeEditPhotosModal()" class="text-choco-100/60 hover:text-choco-100"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <form onsubmit="handleSaveStorePhotos(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">URL Foto 1 (Fachada / Balcão)</label>
+                        <input type="url" id="input-store-img-1" required
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-choco-100/80 mb-1">URL Foto 2 (Produção / Vitrine)</label>
+                        <input type="url" id="input-store-img-2" required
+                            class="w-full bg-choco-950 border border-choco-700 focus:border-amber-500 rounded-xl py-2.5 px-3.5 text-sm text-choco-100 focus:outline-none">
+                    </div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-choco-950 font-bold py-3 rounded-xl text-xs">
+                        Salvar Novas Fotos
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Default Products Catalog
+        let PRODUCTS = JSON.parse(localStorage.getItem('supremo_products_db') || JSON.stringify([
+            {
+                id: 'p1',
+                name: 'Brownie Tradicional Supremo',
+                category: 'tradicional',
+                price: 12.00,
+                desc: 'Massa intensa de cacau nobre, crosta crocante clássica e maciez inigualável.',
+                img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                id: 'p2',
+                name: 'Supremo Recheado Nutella',
+                category: 'recheado',
+                price: 18.50,
+                desc: 'Recheado generosamente com Nutella pura e coberto com raspas de chocolate.',
+                img: 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                id: 'p3',
+                name: 'Ninho com Nutella Especial',
+                category: 'recheado',
+                price: 19.90,
+                desc: 'Camadas duplas de creme de Leite Ninho artesanal e calda de Nutella.',
+                img: 'https://images.unsplash.com/photo-1564355808539-22fda35bed7e?auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                id: 'p4',
+                name: 'Fit 70% Cacau & Castanhas',
+                category: 'tradicional',
+                price: 16.00,
+                desc: 'Sem glúten, cacau 70% belga e pedaços selecionados de castanhas de caju.',
+                img: 'https://images.unsplash.com/photo-1589218436045-ee320057f443?auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                id: 'p5',
+                name: 'Caixa Degustação Presente (4 Un)',
+                category: 'kits',
+                price: 59.90,
+                desc: 'Caixa de luxo personalizada de Hortolândia com 4 sabores variados à escolha.',
+                img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                id: 'p6',
+                name: 'Kit Supremo Festa (12 Un)',
+                category: 'kits',
+                price: 149.00,
+                desc: 'Ideal para celebrações. Mini brownies variados embalados individualmente.',
+                img: 'https://images.unsplash.com/photo-1579372786545-d24232daf58c?auto=format&fit=crop&w=500&q=80'
+            }
+        ]));
+
+        let currentUser = null;
+        let cart = [];
+
+        // Store Photos
+        let storePhotos = JSON.parse(localStorage.getItem('supremo_store_photos') || JSON.stringify({
+            photo1: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80',
+            photo2: 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?auto=format&fit=crop&w=600&q=80'
+        }));
+
+        // Payment Config
+        let paymentConfig = JSON.parse(localStorage.getItem('supremo_payment_config') || JSON.stringify({
+            pixKey: 'supremobrownie@gmail.com',
+            pixName: 'Supremo Brownie Hortolândia'
+        }));
+
+        // Initialize App on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const users = JSON.parse(localStorage.getItem('supremo_users_db') || '{}');
+            users['supremobrownie@gmail.com'] = {
+                name: 'Proprietário Supremo',
+                email: 'supremobrownie@gmail.com',
+                whatsapp: '19991219781',
+                password: 'Supremo2026@',
+                isOwner: true
+            };
+            localStorage.setItem('supremo_users_db', JSON.stringify(users));
+
+            const activeUser = localStorage.getItem('supremo_active_user');
+            if (activeUser) {
+                currentUser = JSON.parse(activeUser);
+                showStoreView();
+            } else {
+                showAuthView();
+            }
+
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 400);
+                }
+            }, 500);
+
+            renderProducts('all');
+            updateStorePhotosUI();
+            updatePendingBadges();
+        });
+
+        window.switchAuthTab = function(tab) {
+            const fLogin = document.getElementById('form-login');
+            const fSignup = document.getElementById('form-signup');
+            const fForgot = document.getElementById('form-forgot');
+            const tLogin = document.getElementById('login-toggle-text');
+            const tSignup = document.getElementById('signup-toggle-text');
+            const alertBox = document.getElementById('auth-alert');
+
+            alertBox.classList.add('hidden');
+            [fLogin, fSignup, fForgot, tLogin, tSignup].forEach(el => el.classList.add('hidden'));
+
+            if (tab === 'login') {
+                fLogin.classList.remove('hidden');
+                tLogin.classList.remove('hidden');
+            } else if (tab === 'signup') {
+                fSignup.classList.remove('hidden');
+                tSignup.classList.remove('hidden');
+            } else if (tab === 'forgot') {
+                fForgot.classList.remove('hidden');
+            }
+        };
+
+        function showAuthAlert(msg, isError = true) {
+            const alert = document.getElementById('auth-alert');
+            alert.classList.remove('hidden', 'bg-red-500/20', 'text-red-300', 'border-red-500/30', 'bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/30');
+            if (isError) {
+                alert.classList.add('bg-red-500/20', 'text-red-300', 'border', 'border-red-500/30');
+                alert.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${msg}</span>`;
+            } else {
+                alert.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-500/30');
+                alert.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${msg}</span>`;
+            }
+        }
+
+        window.handleLogin = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-password').value;
+
+            const users = JSON.parse(localStorage.getItem('supremo_users_db') || '{}');
+            if (users[email] && users[email].password === pass) {
+                currentUser = users[email];
+                localStorage.setItem('supremo_active_user', JSON.stringify(currentUser));
+                showAuthAlert('Login realizado com sucesso!', false);
+                setTimeout(() => showStoreView(), 600);
+            } else {
+                showAuthAlert('E-mail ou senha incorretos. Verifique suas credenciais.');
+            }
+        };
+
+        window.handleSignUp = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim().toLowerCase();
+            const whatsapp = document.getElementById('signup-whatsapp').value.trim();
+            const pass = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm-password').value;
+
+            if (pass !== confirm) {
+                showAuthAlert('As senhas não coincidem.');
+                return;
+            }
+            if (pass.length < 6) {
+                showAuthAlert('A senha deve ter no mínimo 6 caracteres.');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('supremo_users_db') || '{}');
+            if (users[email]) {
+                showAuthAlert('Este e-mail já está cadastrado.');
+                return;
+            }
+
+            users[email] = { name, email, whatsapp, password: pass, isOwner: (email === 'supremobrownie@gmail.com') };
+            localStorage.setItem('supremo_users_db', JSON.stringify(users));
+
+            currentUser = users[email];
+            localStorage.setItem('supremo_active_user', JSON.stringify(currentUser));
+
+            showAuthAlert('Conta criada com sucesso!', false);
+            setTimeout(() => showStoreView(), 800);
+        };
+
+        window.handleForgotPassword = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value.trim();
+            if (email) {
+                alert('Instruções de recuperação enviadas para ' + email);
+                switchAuthTab('login');
+            }
+        };
+
+        window.handleLogout = function() {
+            localStorage.removeItem('supremo_active_user');
+            currentUser = null;
+            showAuthView();
+        };
+
+        function showAuthView() {
+            document.getElementById('auth-view').classList.remove('hidden');
+            document.getElementById('store-view').classList.add('hidden');
+            document.getElementById('store-view').classList.remove('flex');
+        }
+
+        function showStoreView() {
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('store-view').classList.remove('hidden');
+            document.getElementById('store-view').classList.add('flex');
+
+            const isOwner = currentUser && (currentUser.email === 'supremobrownie@gmail.com' || currentUser.isOwner);
+
+            if (currentUser) {
+                document.getElementById('account-name').innerText = currentUser.name;
+                document.getElementById('account-email').innerText = currentUser.email;
+                document.getElementById('account-avatar').innerText = currentUser.name.charAt(0).toUpperCase();
+                
+                const roleBadge = document.getElementById('account-badge-role');
+                if (isOwner) {
+                    roleBadge.innerHTML = `<i class="fa-solid fa-crown text-amber-400"></i> Proprietário (Administrador)`;
+                    roleBadge.className = "inline-flex items-center gap-1 text-[10px] text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full mt-1.5 border border-amber-500/40";
+                    document.getElementById('owner-nav-buttons').classList.remove('hidden');
+                    document.getElementById('owner-nav-buttons').classList.add('flex');
+                    document.getElementById('owner-mobile-menu').classList.remove('hidden');
+                    document.getElementById('owner-edit-photos-banner').classList.remove('hidden');
+                } else {
+                    roleBadge.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Cliente Verificado`;
+                    roleBadge.className = "inline-flex items-center gap-1 text-[10px] text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded-full mt-1.5 border border-gold-500/20";
+                    document.getElementById('owner-nav-buttons').classList.add('hidden');
+                    document.getElementById('owner-nav-buttons').classList.remove('flex');
+                    document.getElementById('owner-mobile-menu').classList.add('hidden');
+                    document.getElementById('owner-edit-photos-banner').classList.add('hidden');
+                }
+            }
+
+            loadUserAddress();
+            renderDbUsersList();
+            renderAdminProductsList();
+            loadPaymentConfigForm();
+            renderPendingOrders();
+            renderKitchenOrders();
+            renderClientOrders();
+            updatePendingBadges();
+        }
+
+        window.switchStoreTab = function(tab) {
+            const sections = ['section-cardapio', 'section-pedidos-cliente', 'section-loja', 'section-endereco', 'section-conta', 'section-pedidos', 'section-gestao-producao', 'section-pagamentos', 'section-admin'];
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if (el) el.classList.add('hidden');
+            });
+
+            const navIds = ['nav-cardapio', 'nav-pedidos-cliente', 'nav-loja', 'nav-endereco', 'nav-conta', 'nav-pedidos', 'nav-gestao-producao', 'nav-pagamentos', 'nav-admin'];
+            navIds.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    const isOwnerBtn = (id === 'nav-pedidos' || id === 'nav-gestao-producao' || id === 'nav-pagamentos' || id === 'nav-admin');
+                    btn.className = isOwnerBtn
+                        ? "nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all flex items-center gap-2"
+                        : "nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-choco-100/70 hover:text-gold-400 hover:bg-choco-900 transition-all flex items-center gap-2";
+                }
+            });
+
+            const target = document.getElementById('section-' + tab);
+            if (target) target.classList.remove('hidden');
+
+            const activeBtn = document.getElementById('nav-' + tab);
+            if (activeBtn) {
+                const isOwnerBtn = (tab === 'pedidos' || tab === 'gestao-producao' || tab === 'pagamentos' || tab === 'admin');
+                activeBtn.className = isOwnerBtn
+                    ? "nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/20 border border-amber-500/60 transition-all flex items-center gap-2"
+                    : "nav-btn px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-gold-400 bg-choco-900 border border-gold-500/30 transition-all flex items-center gap-2";
+            }
+        };
+
+        window.toggleMobileMenu = function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        };
+
+        function renderProducts(catFilter = 'all') {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            const list = catFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === catFilter);
+
+            list.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-choco-900 border border-choco-800 hover:border-gold-500/50 rounded-3xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-52 overflow-hidden">
+                            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://placehold.co/500x300/1c100b/fcd34d?text=Supremo+Brownie'">
+                            <span class="absolute top-3 right-3 bg-choco-950/90 border border-gold-500/40 text-gold-400 font-bold text-xs px-3 py-1 rounded-full shadow-md">
+                                R$ ${p.price.toFixed(2).replace('.', ',')}
+                            </span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-title text-base font-bold text-choco-100">${p.name}</h3>
+                            <p class="text-xs text-choco-100/70 leading-relaxed">${p.desc}</p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="addToCart('${p.id}')" class="w-full bg-choco-950 hover:bg-gold-500 text-gold-400 hover:text-choco-950 border border-gold-500/30 font-bold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Adicionar ao Carrinho</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.filterProducts = function(cat) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all bg-choco-900 text-choco-100/70 hover:text-gold-400 border border-choco-800";
+            });
+            event.target.className = "filter-btn active-filter px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all bg-gold-500 text-choco-950 shadow-md";
+            renderProducts(cat);
+        };
+
+        window.handleSaveProduct = function(e) {
+            e.preventDefault();
+            if (!currentUser || currentUser.email !== 'supremobrownie@gmail.com') {
+                alert('Acesso restrito ao proprietário.');
+                return;
+            }
+
+            const id = document.getElementById('admin-p-id').value;
+            const name = document.getElementById('admin-p-name').value.trim();
+            const category = document.getElementById('admin-p-category').value;
+            const price = parseFloat(document.getElementById('admin-p-price').value);
+            const img = document.getElementById('admin-p-img').value.trim();
+            const desc = document.getElementById('admin-p-desc').value.trim();
+
+            if (id) {
+                const idx = PRODUCTS.findIndex(p => p.id === id);
+                if (idx !== -1) {
+                    PRODUCTS[idx] = { id, name, category, price, img, desc };
+                }
+                alert('Produto atualizado com sucesso!');
+            } else {
+                const newP = { id: 'p_' + Date.now(), name, category, price, img, desc };
+                PRODUCTS.unshift(newP);
+                alert('Novo produto cadastrado no cardápio!');
+            }
+
+            localStorage.setItem('supremo_products_db', JSON.stringify(PRODUCTS));
+            renderProducts('all');
+            renderAdminProductsList();
+            resetProductForm();
+        };
+
+        window.editProduct = function(id) {
+            const p = PRODUCTS.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('admin-p-id').value = p.id;
+            document.getElementById('admin-p-name').value = p.name;
+            document.getElementById('admin-p-category').value = p.category;
+            document.getElementById('admin-p-price').value = p.price;
+            document.getElementById('admin-p-img').value = p.img;
+            document.getElementById('admin-p-desc').value = p.desc;
+
+            document.getElementById('admin-product-form-title').innerText = 'Editar Item do Cardápio';
+            document.getElementById('btn-save-product').innerText = 'Atualizar Produto';
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            
+            document.getElementById('form-product-admin').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.deleteProduct = function(id) {
+            if (!confirm('Tem certeza que deseja excluir este produto do cardápio?')) return;
+            PRODUCTS = PRODUCTS.filter(p => p.id !== id);
+            localStorage.setItem('supremo_products_db', JSON.stringify(PRODUCTS));
+            renderProducts('all');
+            renderAdminProductsList();
+        };
+
+        window.resetProductForm = function() {
+            document.getElementById('form-product-admin').reset();
+            document.getElementById('admin-p-id').value = '';
+            document.getElementById('admin-product-form-title').innerText = 'Adicionar Novo Produto no Cardápio';
+            document.getElementById('btn-save-product').innerText = 'Salvar Produto no Cardápio';
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+        };
+
+        function renderAdminProductsList() {
+            const container = document.getElementById('admin-products-list');
+            if (!container) return;
+
+            if (PRODUCTS.length === 0) {
+                container.innerHTML = `<p class="text-xs text-choco-100/50">Nenhum produto cadastrado.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            PRODUCTS.forEach(p => {
+                const row = document.createElement('div');
+                row.className = "bg-choco-950 p-3 rounded-xl border border-choco-800 flex items-center justify-between text-xs";
+                row.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img src="${p.img}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" onerror="this.src='https://placehold.co/100x100/1c100b/fcd34d?text=Img'">
+                        <div class="min-w-0">
+                            <p class="font-bold text-choco-100 truncate">${p.name}</p>
+                            <p class="text-[10px] text-gold-400">R$ ${p.price.toFixed(2).replace('.', ',')} • <span class="uppercase">${p.category}</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button onclick="editProduct('${p.id}')" class="bg-choco-900 hover:bg-gold-500 hover:text-choco-950 text-gold-400 p-2 rounded-lg border border-gold-500/30 transition-all" title="Editar">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteProduct('${p.id}')" class="bg-choco-900 hover:bg-red-500 hover:text-white text-red-400 p-2 rounded-lg border border-red-500/30 transition-all" title="Excluir">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        window.openEditPhotosModal = function() {
+            if (!currentUser || currentUser.email !== 'supremobrownie@gmail.com') {
+                alert('Acesso restrito ao proprietário.');
+                return;
+            }
+            document.getElementById('input-store-img-1').value = storePhotos.photo1;
+            document.getElementById('input-store-img-2').value = storePhotos.photo2;
+            document.getElementById('edit-photos-modal').classList.remove('hidden');
+        };
+
+        window.closeEditPhotosModal = function() {
+            document.getElementById('edit-photos-modal').classList.add('hidden');
+        };
+
+        window.handleSaveStorePhotos = function(e) {
+            e.preventDefault();
+            storePhotos.photo1 = document.getElementById('input-store-img-1').value.trim();
+            storePhotos.photo2 = document.getElementById('input-store-img-2').value.trim();
+
+            localStorage.setItem('supremo_store_photos', JSON.stringify(storePhotos));
+            updateStorePhotosUI();
+            closeEditPhotosModal();
+            alert('Fotos da loja física atualizadas com sucesso!');
+        };
+
+        function updateStorePhotosUI() {
+            const img1 = document.getElementById('store-photo-1');
+            const img2 = document.getElementById('store-photo-2');
+            if (img1) img1.src = storePhotos.photo1;
+            if (img2) img2.src = storePhotos.photo2;
+        }
+
+        window.handleSaveAddress = function(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const addr = {
+                whatsapp: document.getElementById('addr-whatsapp').value.trim(),
+                street: document.getElementById('addr-street').value.trim(),
+                number: document.getElementById('addr-number').value.trim(),
+                neighborhood: document.getElementById('addr-neighborhood').value.trim(),
+                complement: document.getElementById('addr-complement').value.trim(),
+                city: 'Hortolândia - SP'
+            };
+
+            const userAddresses = JSON.parse(localStorage.getItem('supremo_addresses_db') || '{}');
+            userAddresses[currentUser.email] = addr;
+            localStorage.setItem('supremo_addresses_db', JSON.stringify(userAddresses));
+
+            alert('Endereço e WhatsApp salvos com sucesso!');
+            loadUserAddress();
+        };
+
+        function loadUserAddress() {
+            if (!currentUser) return;
+            const userAddresses = JSON.parse(localStorage.getItem('supremo_addresses_db') || '{}');
+            const addr = userAddresses[currentUser.email];
+            const display = document.getElementById('checkout-addr-display');
+
+            if (addr) {
+                const fullStr = `WhatsApp: ${addr.whatsapp} | ${addr.street}, nº ${addr.number} - ${addr.neighborhood}, ${addr.city} ${addr.complement ? '('+addr.complement+')' : ''}`;
+                if (display) display.innerText = fullStr;
+
+                const w = document.getElementById('addr-whatsapp');
+                const s = document.getElementById('addr-street');
+                const n = document.getElementById('addr-number');
+                const nb = document.getElementById('addr-neighborhood');
+                const c = document.getElementById('addr-complement');
+                if (w) w.value = addr.whatsapp || '';
+                if (s) s.value = addr.street;
+                if (n) n.value = addr.number;
+                if (nb) nb.value = addr.neighborhood;
+                if (c) c.value = addr.complement;
+            } else {
+                if (display) display.innerText = 'Nenhum endereço cadastrado. Clique em "Endereço" no menu para cadastrar.';
+            }
+        }
+
+        function renderDbUsersList() {
+            const listContainer = document.getElementById('db-users-list');
+            if (!listContainer) return;
+
+            const users = JSON.parse(localStorage.getItem('supremo_users_db') || '{}');
+            const entries = Object.entries(users);
+
+            if (entries.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-choco-100/50">Nenhum usuário cadastrado.</p>`;
+                return;
+            }
+
+            listContainer.innerHTML = '';
+            entries.forEach(([email, u]) => {
+                const isOwnerAccount = (email === 'supremobrownie@gmail.com');
+                const row = document.createElement('div');
+                row.className = "bg-choco-950 p-3.5 rounded-xl border border-choco-800 flex items-center justify-between text-xs";
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg ${isOwnerAccount ? 'bg-amber-500 text-choco-950' : 'bg-gold-500/20 text-gold-400'} font-bold flex items-center justify-center">
+                            ${u.name ? u.name.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                        <div>
+                            <p class="font-bold text-choco-100">${u.name} ${isOwnerAccount ? '<span class="text-[9px] bg-amber-500 text-choco-950 px-1.5 py-0.5 rounded ml-1 font-extrabold">DONO</span>' : ''}</p>
+                            <p class="text-[10px] text-choco-100/60">${u.email} • Zap: ${u.whatsapp || 'Não inf.'}</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] ${isOwnerAccount ? 'text-amber-300 font-bold' : 'text-emerald-400 font-semibold'}">${isOwnerAccount ? 'Administrador Master' : 'Ativo'}</span>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+
+        window.handleSavePaymentConfig = function(e) {
+            e.preventDefault();
+            if (!currentUser || currentUser.email !== 'supremobrownie@gmail.com') {
+                alert('Acesso restrito ao proprietário.');
+                return;
+            }
+
+            paymentConfig.pixKey = document.getElementById('config-pix-key').value.trim();
+            paymentConfig.pixName = document.getElementById('config-pix-name').value.trim();
+
+            localStorage.setItem('supremo_payment_config', JSON.stringify(paymentConfig));
+            alert('Chave PIX salva com sucesso!');
+        };
+
+        function loadPaymentConfigForm() {
+            const pk = document.getElementById('config-pix-key');
+            const pn = document.getElementById('config-pix-name');
+            if (pk) pk.value = paymentConfig.pixKey;
+            if (pn) pn.value = paymentConfig.pixName;
+        }
+
+        window.addToCart = function(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            if (!product) return;
+
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartUI();
+            openCartModal();
+        };
+
+        window.updateQty = function(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            updateCartUI();
+        };
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            document.getElementById('cart-badge').innerText = totalQty;
+            document.getElementById('cart-badge-mobile').innerText = totalQty;
+            document.getElementById('cart-subtotal').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('cart-total').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-choco-100/40 space-y-3">
+                        <i class="fa-solid fa-basket-shopping text-3xl"></i>
+                        <p class="text-xs">Seu carrinho está vazio.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            cart.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "bg-choco-950 p-3 rounded-xl border border-choco-800 flex items-center gap-3";
+                row.innerHTML = `
+                    <img src="${item.img}" class="w-12 h-12 rounded-lg object-cover" onerror="this.src='https://placehold.co/100x100/1c100b/fcd34d?text=Img'">
+                    <div class="flex-grow min-w-0">
+                        <h4 class="text-xs font-bold text-choco-100 truncate">${item.name}</h4>
+                        <p class="text-[10px] text-gold-400 font-semibold">R$ ${(item.price * item.qty).toFixed(2).replace('.', ',')}</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-choco-900 px-2 py-1 rounded-lg border border-choco-800">
+                        <button onclick="updateQty('${item.id}', -1)" class="text-choco-100/60 hover:text-gold-400 text-xs px-1">-</button>
+                        <span class="text-xs font-bold text-choco-100">${item.qty}</span>
+                        <button onclick="updateQty('${item.id}', 1)" class="text-choco-100/60 hover:text-gold-400 text-xs px-1">+</button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        window.openCartModal = function() {
+            document.getElementById('cart-modal').classList.remove('hidden');
+        };
+
+        window.closeCartModal = function() {
+            document.getElementById('cart-modal').classList.add('hidden');
+        };
+
+        window.openCheckoutModal = function() {
+            if (cart.length === 0) return;
+            closeCartModal();
+            loadUserAddress();
+            renderCheckoutPixBox();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        };
+
+        window.closeCheckoutModal = function() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        };
+
+        function renderCheckoutPixBox() {
+            const box = document.getElementById('payment-details-box');
+            if (!box) return;
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            box.innerHTML = `
+                <div class="space-y-3">
+                    <div class="inline-block bg-white p-3 rounded-2xl shadow-md">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=00020126580014br.gov.bcb.pix0136${encodeURIComponent(paymentConfig.pixKey)}5204000053039865405${total.toFixed(2)}5802BR5925${encodeURIComponent(paymentConfig.pixName)}6009Hortolandia62070503***6304" alt="QR Code PIX" class="w-32 h-32 mx-auto">
+                    </div>
+                    <p class="text-xs text-gold-400 font-bold">Escaneie o QR Code ou copie a chave PIX abaixo:</p>
+                    <div class="bg-choco-900 p-3 rounded-xl border border-choco-800 flex items-center justify-between text-xs">
+                        <span class="text-choco-100 truncate select-all font-mono">${paymentConfig.pixKey}</span>
+                        <button onclick="navigator.clipboard.writeText('${paymentConfig.pixKey}'); alert('Chave PIX copiada!');" class="bg-gold-500 text-choco-950 font-bold px-3 py-1.5 rounded-lg">Copiar</button>
+                    </div>
+                    <div class="bg-choco-900/50 p-3 rounded-xl text-xs text-choco-100/80 border border-choco-800 text-left space-y-1">
+                        <p class="font-bold text-gold-300">Valor Total: R$ ${total.toFixed(2).replace('.', ',')}</p>
+                        <p class="text-[11px] text-choco-100/70">Ao clicar em "Já Paguei - Enviar para Validação", seu pedido será enviado para o painel do dono. Ele verificará o PIX e iniciará a produção!</p>
+                    </div>
+                    <button onclick="submitOrderToQueue()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-to-slot text-base"></i> Já Paguei - Enviar Pedido para Validação
+                    </button>
+                </div>
+            `;
+        }
+
+        window.submitOrderToQueue = function() {
+            if (cart.length === 0) return;
+            if (!currentUser) {
+                alert('Faça login para realizar o pedido.');
+                return;
+            }
+
+            const userAddresses = JSON.parse(localStorage.getItem('supremo_addresses_db') || '{}');
+            const addr = userAddresses[currentUser.email];
+            if (!addr || !addr.whatsapp) {
+                alert('Por favor, cadastre seu endereço e número de WhatsApp antes de finalizar.');
+                switchStoreTab('endereco');
+                closeCheckoutModal();
+                return;
+            }
+
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            
+            const newOrder = {
+                id: 'ord_' + Date.now(),
+                date: new Date().toLocaleString('pt-BR'),
+                userEmail: currentUser.email,
+                userName: currentUser.name,
+                userWhatsapp: addr.whatsapp,
+                items: [...cart],
+                total: total,
+                address: `${addr.street}, nº ${addr.number} - ${addr.neighborhood}, ${addr.city} ${addr.complement ? '('+addr.complement+')' : ''}`,
+                status: 'pendente', // pendente, preparando, enviado, entregue
+                statusStep: 0 // 0: Pendente PIX, 1: Pedido Recebido / Preparando, 2: Saiu para Entrega, 3: Entregue
+            };
+
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem('supremo_orders_db', JSON.stringify(orders));
+
+            cart = [];
+            updateCartUI();
+            closeCheckoutModal();
+            alert('Pedido enviado com sucesso para a loja!');
+            
+            if (currentUser.email === 'supremobrownie@gmail.com') {
+                switchStoreTab('pedidos');
+            } else {
+                switchStoreTab('pedidos-cliente');
+            }
+            updatePendingBadges();
+        };
+
+        function renderPendingOrders() {
+            const container = document.getElementById('pending-orders-list');
+            if (!container) return;
+
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            const pendings = orders.filter(o => o.status === 'pendente');
+
+            if (pendings.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-choco-950 p-10 rounded-2xl border border-choco-800 text-center space-y-3">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-3xl"></i>
+                        <p class="text-xs text-choco-100/70 font-bold">Nenhum pedido pendente no momento.</p>
+                        <p class="text-[11px] text-choco-100/50">Novos pedidos feitos via PIX aparecerão aqui para você conferir no banco e aprovar.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            pendings.forEach(ord => {
+                const itemsListStr = ord.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                const cleanPhone = (ord.userWhatsapp || '').replace(/\D/g, '');
+                const card = document.createElement('div');
+                card.className = "bg-choco-950 p-5 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-choco-800 pb-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-amber-500 text-choco-950 font-bold text-[10px] px-2.5 py-0.5 rounded uppercase">Pendente PIX</span>
+                                <span class="text-xs text-choco-100/60">${ord.date}</span>
+                            </div>
+                            <h4 class="font-bold text-choco-100 text-sm mt-1">${ord.userName} <span class="text-[11px] text-gold-400 font-semibold ml-1"><i class="fa-brands fa-whatsapp"></i> ${ord.userWhatsapp || 'Não inf.'}</span></h4>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-title font-extrabold text-gold-400 text-lg">R$ ${ord.total.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="bg-choco-900 p-3.5 rounded-xl border border-choco-800 space-y-1">
+                            <span class="font-bold text-gold-300 uppercase block"><i class="fa-solid fa-utensils mr-1"></i> Itens do Pedido:</span>
+                            <p class="text-choco-100/90">${itemsListStr}</p>
+                        </div>
+                        <div class="bg-choco-900 p-3.5 rounded-xl border border-choco-800 space-y-1">
+                            <span class="font-bold text-gold-300 uppercase block"><i class="fa-solid fa-location-dot mr-1"></i> Endereço de Entrega:</span>
+                            <p class="text-choco-100/90">${ord.address}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <div class="text-[11px] text-amber-300/80 flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Confira o PIX no banco e chame o cliente no WhatsApp se necessário.</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="https://wa.me/55${cleanPhone}?text=${encodeURIComponent('Olá ' + ord.userName + ', recebemos seu pedido no Supremo Brownie! Estamos validando seu PIX de R$ ' + ord.total.toFixed(2) + ' para iniciar a preparação.')}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp (${ord.userWhatsapp || 'Zap'})
+                            </a>
+                            <button onclick="confirmOrder('${ord.id}')" class="bg-amber-500 hover:bg-amber-400 text-choco-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+                                <i class="fa-solid fa-check"></i> PIX Aprovado & Iniciar Cozinha
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.confirmOrder = function(orderId) {
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            const idx = orders.findIndex(o => o.id === orderId);
+            if (idx !== -1) {
+                orders[idx].status = 'preparando';
+                orders[idx].statusStep = 1; // 1: Preparando na Cozinha
+                localStorage.setItem('supremo_orders_db', JSON.stringify(orders));
+                alert('Pedido aprovado! Movido para a Cozinha e Status 99.');
+                renderPendingOrders();
+                renderKitchenOrders();
+                updatePendingBadges();
+            }
+        };
+
+        function renderKitchenOrders() {
+            const container = document.getElementById('kitchen-orders-list');
+            if (!container) return;
+
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            // Active orders that are already confirmed/preparando/enviado
+            const actives = orders.filter(o => o.status !== 'pendente' && o.status !== 'entregue');
+
+            if (actives.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-choco-950 p-10 rounded-2xl border border-choco-800 text-center space-y-3">
+                        <i class="fa-solid fa-fire-burner text-amber-400 text-3xl"></i>
+                        <p class="text-xs text-choco-100/70 font-bold">Nenhum pedido ativo na cozinha no momento.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            actives.forEach(ord => {
+                const itemsListStr = ord.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                const cleanPhone = (ord.userWhatsapp || '').replace(/\D/g, '');
+                
+                const card = document.createElement('div');
+                card.className = "bg-choco-950 p-5 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-choco-800 pb-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-amber-400 text-choco-950 font-bold text-[10px] px-2.5 py-0.5 rounded uppercase">Status 99: ${ord.status.toUpperCase()}</span>
+                                <span class="text-xs text-choco-100/60">${ord.date}</span>
+                            </div>
+                            <h4 class="font-bold text-choco-100 text-sm mt-1">${ord.userName} <span class="text-[11px] text-gold-400 font-semibold ml-1"><i class="fa-brands fa-whatsapp"></i> ${ord.userWhatsapp || 'Não inf.'}</span></h4>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-title font-extrabold text-gold-400 text-lg">R$ ${ord.total.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="bg-choco-900 p-3.5 rounded-xl border border-choco-800 space-y-1">
+                            <span class="font-bold text-gold-300 uppercase block"><i class="fa-solid fa-utensils mr-1"></i> Itens:</span>
+                            <p class="text-choco-100/90">${itemsListStr}</p>
+                        </div>
+                        <div class="bg-choco-900 p-3.5 rounded-xl border border-choco-800 space-y-1">
+                            <span class="font-bold text-gold-300 uppercase block"><i class="fa-solid fa-location-dot mr-1"></i> Endereço:</span>
+                            <p class="text-choco-100/90">${ord.address}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2 bg-choco-900/40 p-3 rounded-xl border border-choco-800">
+                        <span class="text-xs text-choco-100/80 font-bold">Mudar Status para o Cliente (Estilo 99):</span>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a href="https://wa.me/55${cleanPhone}?text=${encodeURIComponent('Olá ' + ord.userName + ', sobre seu pedido no Supremo Brownie: estamos a caminho ou preparando com carinho!')}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-md">
+                                <i class="fa-brands fa-whatsapp"></i> Zap
+                            </a>
+                            <button onclick="updateOrderStatus('${ord.id}', 'preparando', 1)" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${ord.status === 'preparando' ? 'bg-amber-500 text-choco-950 shadow' : 'bg-choco-950 text-choco-100/70 border border-choco-800'}">
+                                1. Preparando na Cozinha
+                            </button>
+                            <button onclick="updateOrderStatus('${ord.id}', 'enviado', 2)" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${ord.status === 'enviado' ? 'bg-amber-500 text-choco-950 shadow' : 'bg-choco-950 text-choco-100/70 border border-choco-800'}">
+                                2. Saiu para Entrega
+                            </button>
+                            <button onclick="updateOrderStatus('${ord.id}', 'entregue', 3)" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">
+                                3. Concluir / Entregue
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.updateOrderStatus = function(orderId, newStatus, stepNum) {
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            const idx = orders.findIndex(o => o.id === orderId);
+            if (idx !== -1) {
+                orders[idx].status = newStatus;
+                orders[idx].statusStep = stepNum;
+                localStorage.setItem('supremo_orders_db', JSON.stringify(orders));
+                alert('Status do pedido atualizado para: ' + newStatus.toUpperCase());
+                renderKitchenOrders();
+                renderClientOrders();
+                updatePendingBadges();
+            }
+        };
+
+        function renderClientOrders() {
+            const container = document.getElementById('client-orders-list');
+            if (!container || !currentUser) return;
+
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            const myOrders = orders.filter(o => o.userEmail === currentUser.email);
+
+            if (myOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-choco-950 p-12 rounded-2xl border border-choco-800 text-center space-y-3">
+                        <i class="fa-solid fa-motorcycle text-gold-400 text-3xl"></i>
+                        <p class="text-xs text-choco-100/70 font-bold">Você ainda não realizou nenhum pedido.</p>
+                        <button onclick="switchStoreTab('cardapio')" class="bg-gold-500 text-choco-950 text-xs font-bold px-4 py-2 rounded-xl">Ir para o Cardápio</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            myOrders.forEach(ord => {
+                const step = ord.statusStep || (ord.status === 'pendente' ? 0 : (ord.status === 'preparando' ? 1 : (ord.status === 'enviado' ? 2 : 3)));
+                const itemsListStr = ord.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+
+                // 99-style progress tracker steps
+                const stepsConfig = [
+                    { title: 'Aguardando PIX', desc: 'Confirmação manual pelo dono' },
+                    { title: 'Preparando na Cozinha', desc: 'Seu brownie está saindo do forno' },
+                    { title: 'Saiu para Entrega', desc: 'Entregador a caminho do endereço' },
+                    { title: 'Pedido Entregue', desc: 'Bom apetite!' }
+                ];
+
+                let stepsHtml = '';
+                stepsConfig.forEach((s, idx) => {
+                    const isDone = idx <= step;
+                    const isCurrent = idx === step;
+                    stepsHtml += `
+                        <div class="flex items-start gap-3 relative">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 z-10 transition-all ${isDone ? 'bg-gold-500 text-choco-950 shadow-md ring-4 ring-gold-500/20' : 'bg-choco-950 text-choco-100/40 border border-choco-800'}">
+                                ${idx + 1}
+                            </div>
+                            <div class="space-y-0.5 pt-1">
+                                <p class="text-xs font-bold ${isCurrent ? 'text-gold-400' : (isDone ? 'text-choco-100' : 'text-choco-100/40')}">${s.title}</p>
+                                <p class="text-[10px] text-choco-100/60">${s.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const card = document.createElement('div');
+                card.className = "bg-choco-950 p-6 rounded-2xl border border-gold-500/30 space-y-6 shadow-2xl";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-choco-800 pb-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-gold-500/20 text-gold-400 font-bold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider border border-gold-500/30">Pedido #${ord.id.slice(-6)}</span>
+                                <span class="text-xs text-choco-100/60">${ord.date}</span>
+                            </div>
+                            <p class="text-xs text-choco-100/80 mt-1"><strong class="text-gold-300">Itens:</strong> ${itemsListStr}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-title font-extrabold text-gold-400 text-lg">R$ ${ord.total.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>
+
+                    <!-- 99-style Timeline Progress Bar -->
+                    <div class="space-y-4 py-2">
+                        <h4 class="font-title text-xs text-gold-400 font-bold uppercase tracking-wider">Acompanhamento em Tempo Real (Estilo 99)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-choco-900 p-4 rounded-xl border border-choco-800">
+                            ${stepsHtml}
+                        </div>
+                    </div>
+
+                    <div class="text-[11px] text-choco-100/70 bg-choco-900 p-3 rounded-xl border border-choco-800 flex items-center justify-between">
+                        <span><strong class="text-gold-300">Endereço de Entrega:</strong> ${ord.address}</span>
+                        <a href="https://wa.me/5519991219781?text=${encodeURIComponent('Olá Supremo Brownie, gostaria de tirar dúvida sobre meu pedido #' + ord.id.slice(-6))}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+                            <i class="fa-brands fa-whatsapp"></i> Suporte Loja
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updatePendingBadges() {
+            const orders = JSON.parse(localStorage.getItem('supremo_orders_db') || '[]');
+            const pendings = orders.filter(o => o.status === 'pendente').length;
+            const kitchenCount = orders.filter(o => o.status !== 'pendente' && o.status !== 'entregue').length;
+
+            const badgeNav = document.getElementById('pending-badge-nav');
+            const badgeMobDot = document.getElementById('pending-badge-mobile-dot');
+            const badgeMobCount = document.getElementById('pending-badge-mobile-count');
+            const activeKitchenBadge = document.getElementById('active-kitchen-badge');
+            const activeOrderBadge = document.getElementById('active-order-badge');
+
+            if (pendings > 0) {
+                if (badgeNav) {
+                    badgeNav.innerText = pendings;
+                    badgeNav.classList.remove('hidden');
+                }
+                if (badgeMobDot) badgeMobDot.classList.remove('hidden');
+                if (badgeMobCount) {
+                    badgeMobCount.innerText = pendings;
+                    badgeMobCount.classList.remove('hidden');
+                }
+            } else {
+                if (badgeNav) badgeNav.classList.add('hidden');
+                if (badgeMobDot) badgeMobDot.classList.add('hidden');
+                if (badgeMobCount) badgeMobCount.classList.add('hidden');
+            }
+
+            if (kitchenCount > 0 && activeKitchenBadge) {
+                activeKitchenBadge.innerText = kitchenCount;
+                activeKitchenBadge.classList.remove('hidden');
+            } else if (activeKitchenBadge) {
+                activeKitchenBadge.classList.add('hidden');
+            }
+
+            if (currentUser) {
+                const myActive = orders.some(o => o.userEmail === currentUser.email && o.status !== 'entregue');
+                if (activeOrderBadge) {
+                    if (myActive) activeOrderBadge.classList.remove('hidden');
+                    else activeOrderBadge.classList.add('hidden');
+                }
+            }
+        }
+
+        window.handleUpdatePassword = function(e) {
+            e.preventDefault();
+            alert('Senha alterada com sucesso!');
+            e.target.reset();
+        };
+    </script>
+</body>
+</html>
